@@ -17,7 +17,7 @@ export function RouteSummary({ route, onClose }: { route: RouteResult; onClose: 
       <span className="summary-eyebrow">Our least helpful suggestion</span>
       <h2>{formatDuration(route.durationSeconds)}</h2>
       <p className="summary-distance">{kilometres} km · eventually</p>
-      <p className="route-message">{route.message}</p>
+      <p className="route-message">DISCLAIMER: Does not account for breaks, may take longer</p>
       <p className="entertainment-note">For entertainment only. This is deliberately bad routing, not navigation advice.</p>
     </aside>
   );

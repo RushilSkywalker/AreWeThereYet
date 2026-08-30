@@ -35,7 +35,6 @@ main { position: relative; width: 100vw; height: 100dvh; overflow: hidden; }
   display: flex;
   align-items: center;
   gap: 11px;
-  min-width: 390px;
   padding: 11px 14px;
   border-radius: 13px;
   background: rgba(255, 255, 255, 0.96);
@@ -56,18 +55,6 @@ main { position: relative; width: 100vw; height: 100dvh; overflow: hidden; }
 .brand-mark span { color: white; font-size: 20px; font-weight: 800; transform: rotate(45deg); }
 .brand-bar h1 { margin: 0; font-size: 18px; letter-spacing: -0.4px; }
 .brand-bar p { margin: 2px 0 0; color: var(--muted); font-size: 11px; }
-.region-chip {
-  margin-left: auto;
-  padding: 5px 8px;
-  border: 1px solid #cdddf7;
-  border-radius: 999px;
-  color: var(--blue-dark);
-  background: #edf4ff;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .4px;
-  text-transform: uppercase;
-}
 
 .search-panel {
   position: absolute;

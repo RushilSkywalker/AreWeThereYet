@@ -190,12 +190,6 @@ export async function POST(request: Request) {
     distanceMeters: selectedRoute.distanceMeters,
     sharedRoadMeters: Math.round(nearbyRoadMeters),
     isFallback,
-    message:
-      selectedRoute.ordersTested < 6
-        ? "Provider limits reduced the comparison, so this is the least-overlapping complete detour order available."
-        : isFallback
-          ? "We tested every detour order, but road bottlenecks still forced parts of the trip into nearby corridors."
-          : "Every detour order was tested, and this one keeps the road corridors at least 2 km apart wherever possible.",
   };
   routeCache.set(cacheKey, { expiresAt: Date.now() + 60 * 60 * 1000, payload });
   return NextResponse.json(payload);

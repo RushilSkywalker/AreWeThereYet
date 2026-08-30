@@ -35,5 +35,4 @@ export type RouteResult = {
   distanceMeters: number;
   sharedRoadMeters: number;
   isFallback: boolean;
-  message: string;
 };

@@ -49,9 +49,8 @@ export default function Home() {
         <div className="brand-mark" aria-hidden="true"><span>?</span></div>
         <div>
           <h1>Are We There Yet?</h1>
-          <p>Directions with worse judgment</p>
+          <p>I&apos;m sure we&apos;ll get there</p>
         </div>
-        <span className="region-chip">Afro-Eurasia MVP</span>
       </header>
 
       <section className="search-panel" aria-label="Plan a terrible route">
