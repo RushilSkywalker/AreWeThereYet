@@ -33,7 +33,7 @@ export function LocationSearch({ label, placeholder, value, marker, onChange }: 
         const payload = (await response.json()) as { results?: SearchResult[]; error?: string };
         if (!response.ok) throw new Error(payload.error ?? "Search failed");
         setResults(payload.results ?? []);
-        if (!payload.results?.length) setError("No matching road-connected place found in Afro-Eurasia.");
+        if (!payload.results?.length) setError("No matching place found in a supported road region.");
       } catch (caught) {
         if (!controller.signal.aborted) setError(caught instanceof Error ? caught.message : "Search failed");
       } finally {

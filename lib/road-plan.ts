@@ -33,7 +33,13 @@ const AFRICA_NORTH_SPINE: Place = {
 
 function isAfrican(point: Coordinate & { countryCode?: string }) {
   if (point.countryCode) return AFRICAN_COUNTRY_CODES.has(point.countryCode.toUpperCase());
-  return point.lng < 46 && point.lat < 36 && (point.lat < 12 || point.lng < 35);
+  return (
+    point.lng >= -20 &&
+    point.lng < 46 &&
+    point.lat >= -36 &&
+    point.lat < 36 &&
+    (point.lat < 12 || point.lng < 35)
+  );
 }
 
 function addIntermediate(points: Place[], intermediate: Place, start: Place, end: Place) {

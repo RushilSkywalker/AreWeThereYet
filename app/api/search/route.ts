@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAfroEurasiaPlace } from "@/lib/afro-eurasia";
+import { isSupportedRoadPlace, roadRegionForPlace } from "@/lib/road-regions";
 
 type PhotonFeature = {
   geometry?: { type?: string; coordinates?: [number, number] };
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     q: query,
     limit: "12",
     lang: "en",
-    bbox: "-19,-36,180,79",
+    bbox: "-169,-56,180,79",
   });
 
   try {
@@ -66,7 +66,9 @@ export async function GET(request: NextRequest) {
       const coordinates = feature.geometry?.coordinates;
       if (!properties || !coordinates || feature.geometry?.type !== "Point") return [];
       const countryCode = properties.countrycode?.toUpperCase();
-      if (!isAfroEurasiaPlace({ lat: coordinates[1], lng: coordinates[0], countryCode })) return [];
+      const place = { lat: coordinates[1], lng: coordinates[0], countryCode };
+      if (!isSupportedRoadPlace(place)) return [];
+      const region = roadRegionForPlace(place);
       const name = displayName(properties);
       if (!name) return [];
       return [{
@@ -75,6 +77,8 @@ export async function GET(request: NextRequest) {
         lat: coordinates[1],
         lng: coordinates[0],
         countryCode,
+        regionId: region?.id,
+        regionName: region?.name,
         type: properties.osm_value ?? "place",
       }];
     }).slice(0, 6);

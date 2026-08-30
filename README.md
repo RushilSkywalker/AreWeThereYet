@@ -1,10 +1,10 @@
 # Are We There Yet?
 
-A single-region Afro-Eurasia MVP for deliberately terrible road trips. A user selects a road-connected mainland source and destination, the service projects the destination's antipode onto a peripheral Afro-Eurasian road, sends the trip through the farthest feasible road point, then finds the midpoint between those two extremes and visits the road point farthest from that midpoint before finally reaching the destination.
+A deliberately terrible road-trip planner for four road-connected land groups: Afro-Eurasia, North America, South America, and mainland Australia. A user selects a source and destination in the same group, the service projects the destination's antipode onto a peripheral road in that group, sends the trip through the farthest feasible road point, then finds the midpoint between those two extremes and visits the road point farthest from that midpoint before finally reaching the destination.
 
 ## What works
 
-- Search-as-you-type suggestions restricted to the road-connected Afro-Eurasia mainland
+- Search-as-you-type suggestions restricted to the four supported road regions
 - MapLibre map with MapTiler Streets when configured and an OpenFreeMap fallback
 - Any-order source → three calculated extreme road points → destination algorithm
 - Twelve reusable directed road calculations covering all six possible detour orders

@@ -7,6 +7,8 @@ export type Place = Coordinate & {
   id: string;
   name: string;
   countryCode?: string;
+  regionId?: string;
+  regionName?: string;
 };
 
 export type SearchResult = Place & {
@@ -19,6 +21,7 @@ export type RouteGeometry = {
 };
 
 export type RouteResult = {
+  region: { id: string; name: string };
   source: Place;
   destination: Place;
   waypoint: Place;

@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
-  farthestAfroEurasiaRoadPoint,
-  isAfroEurasiaPlace,
-  nearestAfroEurasiaAntipodeCandidates,
-} from "@/lib/afro-eurasia";
-import {
   antipode,
   combineGeometries,
   downsampleGeometry,
   geographicMidpoint,
 } from "@/lib/geo";
+import {
+  farthestRegionRoadPoint,
+  nearestRegionAntipodeCandidates,
+  roadRegionForPlace,
+  sharedRoadRegion,
+} from "@/lib/road-regions";
 import {
   chooseLeastOverlappingOrder,
   directedEdgeKey,
@@ -91,34 +92,49 @@ export async function POST(request: Request) {
   const parsed = requestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Choose a valid source and destination inside the Afro-Eurasia road region." },
+      { error: "Choose a valid source and destination inside a supported road region." },
       { status: 400 },
     );
   }
 
   const { source, destination } = parsed.data;
-  if (!isAfroEurasiaPlace(source) || !isAfroEurasiaPlace(destination)) {
+  const sourceRegion = roadRegionForPlace(source);
+  const destinationRegion = roadRegionForPlace(destination);
+  if (!sourceRegion || !destinationRegion) {
     return NextResponse.json(
-      { error: "Both places must be on the road-connected Afro-Eurasia mainland." },
+      { error: "Both places must be inside one of the supported road regions." },
+      { status: 400 },
+    );
+  }
+  const region = sharedRoadRegion(source, destination);
+  if (!region) {
+    return NextResponse.json(
+      {
+        code: "CROSS_REGION",
+        error: `There is no continuous roadway connecting ${sourceRegion.name} and ${destinationRegion.name}.`,
+        sourceRegion: sourceRegion.name,
+        destinationRegion: destinationRegion.name,
+      },
       { status: 400 },
     );
   }
 
-  const cacheKey = `v4:${[source.lat, source.lng, destination.lat, destination.lng]
+  const cacheKey = `v5:${region.id}:${[source.lat, source.lng, destination.lat, destination.lng]
     .map((value) => value.toFixed(5))
     .join(":")}`;
   const cached = routeCache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) return NextResponse.json(cached.payload);
 
   const target = antipode(destination);
-  const antipodalPoint = nearestAfroEurasiaAntipodeCandidates(destination, 1)[0];
+  const antipodalPoint = nearestRegionAntipodeCandidates(region, destination, 1)[0];
   if (!antipodalPoint) return NextResponse.json({ error: routingError() }, { status: 502 });
 
-  const farthestPoint = farthestAfroEurasiaRoadPoint(antipodalPoint);
+  const farthestPoint = farthestRegionRoadPoint(region, antipodalPoint);
   if (!farthestPoint) return NextResponse.json({ error: routingError() }, { status: 502 });
 
   const midpoint = geographicMidpoint(antipodalPoint, farthestPoint);
-  const midpointFarthestPoint = farthestAfroEurasiaRoadPoint(
+  const midpointFarthestPoint = farthestRegionRoadPoint(
+    region,
     midpoint,
     undefined,
     [antipodalPoint.id, farthestPoint.id],
@@ -174,6 +190,7 @@ export async function POST(request: Request) {
     ...selectedRoute.edges.slice(1).map((edge) => edge.segment.geometry),
   );
   const payload = {
+    region: { id: region.id, name: region.name },
     source,
     destination,
     waypoint: antipodalPoint,
